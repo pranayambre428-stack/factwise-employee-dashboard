@@ -14,11 +14,13 @@ import {
   Clock,
 } from "lucide-react";
 import { createPortal } from "react-dom";
+import { EMPLOYEES } from "../../data/employees";
 
 interface EmployeeModalProps {
   employee: Employee | null;
   isOpen: boolean;
   onClose: () => void;
+  onEmployeeChange?: (employee: Employee) => void;
 }
 
 const Divider = () => (
@@ -97,10 +99,10 @@ export function EmployeeModal({
   employee,
   isOpen,
   onClose,
+  onEmployeeChange,
 }: EmployeeModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
-  /* keyboard close */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -129,6 +131,10 @@ export function EmployeeModal({
   const [avatarBg, avatarFg] =
     avatarColors[employee.firstName.charCodeAt(0) % avatarColors.length];
 
+  const directReports = EMPLOYEES.filter(
+    (emp) => emp.manager === `${employee.firstName} ${employee.lastName}`,
+  );
+
   return createPortal(
     <>
       <div
@@ -145,31 +151,24 @@ export function EmployeeModal({
         aria-modal="true"
         aria-label={`${employee.firstName} ${employee.lastName} details`}
         className={cn(
-          // shared
           "fixed z-50 bg-white dark:bg-[#0f1117] flex flex-col",
           "transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
           "shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_24px_48px_-12px_rgba(0,0,0,0.18)]",
           "dark:shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_24px_48px_-12px_rgba(0,0,0,0.6)]",
-
-          // desktop: right sheet
           "md:inset-y-0 md:right-0 md:w-[440px] md:rounded-l-2xl md:border-l md:border-gray-200 md:dark:border-white/[0.07]",
           isOpen ? "md:translate-x-0" : "md:translate-x-full",
 
-          // mobile: bottom sheet
           "max-md:inset-x-0 max-md:bottom-0 max-md:rounded-t-2xl max-md:max-h-[92dvh]",
           "max-md:border-t max-md:border-gray-200 max-md:dark:border-white/[0.07]",
           isOpen ? "max-md:translate-y-0" : "max-md:translate-y-full",
         )}
       >
-        {/* ── mobile drag pill ── */}
         <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
           <div className="w-9 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
         </div>
 
-        {/* ── header ── */}
         <div className="flex items-start justify-between px-5 pt-5 pb-4 shrink-0">
           <div className="flex items-center gap-3.5">
-            {/* avatar */}
             <div
               className="w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold shrink-0 select-none"
               style={{ backgroundColor: avatarBg, color: avatarFg }}
@@ -216,9 +215,7 @@ export function EmployeeModal({
 
         <Divider />
 
-        {/* ── scrollable body ── */}
         <div className="flex-1 overflow-y-auto overscroll-contain">
-          {/* ── KPI strip ── */}
           <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-white/[0.06]">
             {[
               {
@@ -271,7 +268,6 @@ export function EmployeeModal({
 
           <Divider />
 
-          {/* ── performance bar ── */}
           <div className="px-5 py-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
@@ -298,7 +294,6 @@ export function EmployeeModal({
 
           <Divider />
 
-          {/* ── contact & org ── */}
           <div className="px-5 py-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
             <Field icon={Mail} label="Email" value={employee.email} />
             <Field icon={MapPin} label="Location" value={employee.location} />
@@ -343,7 +338,6 @@ export function EmployeeModal({
 
           <Divider />
 
-          {/* ── skills ── */}
           <div className="px-5 py-5">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-3">
               Skills
@@ -362,11 +356,61 @@ export function EmployeeModal({
             </div>
           </div>
 
-          {/* bottom breathing room for mobile */}
+          {directReports.length > 0 && (
+            <>
+              <Divider />
+              <div className="px-5 py-5">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-3">
+                  Direct Reports ({directReports.length})
+                </span>
+                <div className="flex flex-col gap-3">
+                  {directReports.map((report) => {
+                    const initials = `${report.firstName.charAt(0)}${report.lastName.charAt(0)}`;
+                    const avatarColors = [
+                      ["#e0e7ff", "#4f46e5"],
+                      ["#fce7f3", "#db2777"],
+                      ["#d1fae5", "#059669"],
+                      ["#fef3c7", "#d97706"],
+                      ["#ede9fe", "#7c3aed"],
+                    ];
+                    const [bg, fg] =
+                      avatarColors[
+                        report.firstName.charCodeAt(0) % avatarColors.length
+                      ];
+                    return (
+                      <button
+                        key={report.id}
+                        onClick={() => onEmployeeChange?.(report)}
+                        className="flex items-center gap-3 p-2 rounded-xl border border-gray-100 dark:border-white/[0.05] bg-gray-50/50 dark:bg-white/[0.02] hover:border-indigo-300 dark:hover:border-indigo-500/40 hover:bg-white dark:hover:bg-white/[0.05] transition-all text-left w-full group"
+                      >
+                        <div
+                          className="w-9 h-9 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0 select-none group-hover:scale-105 transition-transform"
+                          style={{ backgroundColor: bg, color: fg }}
+                        >
+                          {initials}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                            {report.firstName} {report.lastName}
+                          </p>
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                            {report.position}
+                          </p>
+                        </div>
+                        {report.isActive && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+
           <div className="h-4" />
         </div>
 
-        {/* ── footer actions ── */}
         <div className="shrink-0 px-5 py-4 flex items-center gap-2.5 border-t border-gray-100 dark:border-white/[0.06] bg-gray-50/80 dark:bg-white/[0.02]">
           <button
             onClick={onClose}
@@ -374,12 +418,6 @@ export function EmployeeModal({
           >
             Close
           </button>
-          {/* <button
-            disabled
-            className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-          >
-            Edit Employee
-          </button> */}
         </div>
       </div>
     </>,
