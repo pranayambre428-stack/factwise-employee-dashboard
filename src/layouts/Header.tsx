@@ -1,5 +1,4 @@
-import React from "react";
-import { Search, Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { ThemeToggle } from "../components/ThemeToggle";
 
 interface HeaderProps {

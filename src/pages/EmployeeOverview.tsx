@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Users, UserCheck, BadgeDollarSign, LineChart } from "lucide-react";
 import { StatCard } from "../components/StatCard";
 import { FilterBar, type FilterState } from "../features/employees/FilterBar";

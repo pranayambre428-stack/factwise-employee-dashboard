@@ -1,6 +1,5 @@
-import React from 'react';
 import { cn } from '../lib/utils';
-import { Home, Users, BarChart3, FileText, Settings, LogOut, X } from 'lucide-react';
+import { Home, LogOut, X } from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
