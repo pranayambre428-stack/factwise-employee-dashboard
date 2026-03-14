@@ -1,14 +1,12 @@
-import "./App.css";
-import EmployeeGrid from "./componenets/EmployeeGrid";
-import { useEmployeeData } from "./hooks/useEmployeeData";
+import React from 'react';
+import { DashboardLayout } from './layouts/DashboardLayout';
+import { EmployeeOverview } from './pages/EmployeeOverview';
 
 function App() {
-  const { employees } = useEmployeeData();
   return (
- 
-      <main className="p-10">
-        <EmployeeGrid employees={employees} />
-      </main>
+    <DashboardLayout>
+      <EmployeeOverview />
+    </DashboardLayout>
   );
 }
 
