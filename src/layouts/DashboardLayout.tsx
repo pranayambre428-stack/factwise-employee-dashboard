@@ -7,7 +7,7 @@ interface DashboardLayoutProps {
   title?: string;
 }
 
-export function DashboardLayout({ children, title = "Employees Overview" }: DashboardLayoutProps) {
+export function DashboardLayout({ children, title = "Employees" }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
