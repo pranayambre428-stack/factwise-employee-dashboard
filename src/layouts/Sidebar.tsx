@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { cn } from "../lib/utils";
-import { Home, LogOut, ChevronRight } from "lucide-react";
+import { Home, ChevronRight } from "lucide-react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -107,9 +107,11 @@ function LogoRow({ showLabel }: { showLabel: boolean }) {
         T.border,
       )}
     >
-      <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-sm font-black shadow-lg shadow-indigo-500/20 shrink-0">
-        F
-      </div>
+      <img
+        src="/logo.png"
+        alt="Logo"
+        className="w-7 h-7 rounded-lg shadow-lg shadow-indigo-500/20 shrink-0"
+      />
       <span
         className={cn(
           "ml-3 text-sm font-bold tracking-tight whitespace-nowrap transition-[opacity,transform] duration-150",
@@ -119,7 +121,6 @@ function LogoRow({ showLabel }: { showLabel: boolean }) {
             : "opacity-0 -translate-x-2 pointer-events-none",
         )}
       >
-        FactWise
       </span>
     </div>
   );
@@ -220,9 +221,11 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             T.border,
           )}
         >
-          <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-sm font-black shadow-lg shadow-indigo-500/20">
-            F
-          </div>
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="w-7 h-7 rounded-lg shadow-lg shadow-indigo-500/20"
+          />
         </div>
 
         <nav className="flex-1 flex flex-col items-center py-3 gap-1 w-full px-2">
